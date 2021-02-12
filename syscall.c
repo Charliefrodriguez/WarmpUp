@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <sys/time.h>                                                                                
 #include <sys/syscall.h>
-
+#include<time.h>
 double avg_time = 0;
 
 int main(int argc, char *argv[]) {
@@ -31,15 +31,15 @@ int main(int argc, char *argv[]) {
 	value.tv_sec = 60; 
 	value.tv_usec = 0;  
 
-	value_old.tv_sec = 0; 
-	value_old.tv_usec = 0; 
+//	value_old.tv_sec = 0; 
+//	value_old.tv_usec = 0; 
 	
 	interval.tv_sec = 0;
 	interval.tv_usec = 0;
 
-	interval_old.tv_sec = 0; 
-	interval_old.tv_usec = 0;
-
+	//interval_old.tv_sec = 0; 
+	//interval_old.tv_usec = 0;
+/*
 	struct itimerval new,old; 
 
 	new.it_value = value; 
@@ -47,22 +47,30 @@ int main(int argc, char *argv[]) {
 
 	old.it_value = value_old; 
 	old.it_interval = interval_old; 
+*/
+// setitimer (ITIMER_REAL, &new, &old);
 
- setitimer (ITIMER_REAL, &new, &old);
+
+int start = gettimeofday(&value_old,NULL);
 
 	for(i; i < 3000; ++i) {
 		pid = syscall(SYS_getpid);	
-	} 
-	
-	getitimer (ITIMER_REAL , &old); 
+} 
+
+int end = gettimeofday(&interval_old,NULL);
+
+//	getitimer (ITIMER_REAL , &old); 
 
 //	avg_time  = (end-start)/2;
 	// Remember to place your final calculated average time
 	// per system call into the avg_time variable
 
 //	printf("Average time per system call is %ld seconds and %ld \n",60- old.it_value.tv_sec,1000000- old.it_value.tv_usec );
-	
-		printf("Average time per system call is %lf \n", (60- old.it_value.tv_sec + 0.10 * (1000000- old.it_value.tv_usec))/3000 );
+
+//			printf("%ld \n",end);
+
+		double num = (1000000*interval_old.tv_sec + interval_old.tv_usec) - ( 1000000*value_old.tv_sec + value_old.tv_usec);
+		printf("Average time per system call is %lf \n", num/3000 );
 
 
 	return 0;
